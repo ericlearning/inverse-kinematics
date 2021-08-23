@@ -1,5 +1,7 @@
 import arcade
 import jax.numpy as np
+from jax import grad
+from jax.experimental import optimizers
 from arcade.key import *
 from pyglet import window
 from kinematics import rand_theta, rand_arm, forward_kinematics
@@ -8,11 +10,26 @@ WIDTH = 800
 HEIGHT = 800
 COUNT = 9
 
+target_coord = (127, 95)
+
 all_thetas = np.array([rand_theta() for _ in range(COUNT)])
 all_arms = np.array([rand_arm() for _ in range(COUNT)])
 
 keys_inc = [Q, W, E, R, T, Y, U, I, O]
 keys_dec = [A, S, D, F, G, H, J, K, L]
+
+def loss(pred, target):
+    p_x, p_y = pred
+    t_x, t_y = target
+    return ((p_x - t_x)**2 + (p_y - t_y)**2) / 2.0
+
+opt_init, opt_update, get_params = optimizers.adam(step_size=0.01)
+
+opt_thetas = opt_init(all_thetas)
+thetas = get_params(opt_thetas)
+cur_pred = forward_kinematics(thetas, arms)
+cur_grad = grad(loss)(cur_pred, target_coord)
+
 
 class Arm(arcade.Sprite):
     def update(self):
