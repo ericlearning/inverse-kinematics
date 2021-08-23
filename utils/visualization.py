@@ -1,6 +1,8 @@
+import torch
 import arcade
 from .kinematics import forward_kinematics
 
+@torch.no_grad()
 def draw_arm(thetas, arms, w, h):
     prev_x, prev_y = 0, 0
     shapes = arcade.ShapeElementList()

@@ -1,8 +1,8 @@
 import torch
 import arcade
+import torch.nn as nn
 from arcade.key import *
 from .visualization import draw_arm
-from .kinematics import forward_kinematics
 
 keys_inc = [Q, W, E, R, T, Y, U, I, O]
 keys_dec = [A, S, D, F, G, H, J, K, L]
@@ -19,7 +19,8 @@ class Kinematics(arcade.Window):
         self.arm = None
     
     def update_arm(self):
-        self.arm = draw_arm(self.all_thetas, self.all_arms, self.w, self.h)
+        self.arm = draw_arm(
+            self.all_thetas, self.all_arms, self.w, self.h)
     
     def setup(self):
         self.update_arm()
@@ -29,7 +30,8 @@ class Kinematics(arcade.Window):
         self.arm.draw()
     
     def on_update(self, _):
-        self.all_thetas += self.increments
+        with torch.no_grad():
+            self.all_thetas += self.increments
         if self.increments.any():
             self.update_arm()
     
@@ -48,9 +50,3 @@ class Kinematics(arcade.Window):
     
     def on_key_release(self, symbol, _):
         self.set_increment(symbol, [0, 0])
-
-
-class Arm(arcade.Sprite):
-    def update(self):
-        self.x, self.y = forward_kinematics(
-            self.all_thetas, self.all_arms)
