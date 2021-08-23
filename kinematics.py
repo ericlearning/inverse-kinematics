@@ -1,11 +1,18 @@
-import numpy as np
+import jax
+import random
+import jax.numpy as np
+from jax import jit
+
 
 def rand_theta():
-    return np.random.uniform(0, np.pi*2)
+    key = jax.random.PRNGKey(random.randint(0, 10000))
+    return jax.random.uniform(key, minval=0, maxval=np.pi*2)
 
 def rand_arm():
-    return np.random.uniform(50, 100)
+    key = jax.random.PRNGKey(random.randint(0, 10000))
+    return jax.random.uniform(key, minval=50, maxval=np.pi*2)
 
+@jit
 def forward_kinematics(thetas, arms):
     thetas = thetas.reshape(1, -1)
 
