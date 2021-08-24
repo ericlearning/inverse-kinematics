@@ -21,13 +21,15 @@ def draw_arm_naive(thetas, arms, w, h):
         shapes.append(line)
     return shapes
 
-def draw_arm(thetas, arms, w, h):
+def draw_arm(thetas, arms, w, h, draw_joints=False):
     prev_x, prev_y = 0, 0
     shapes = arcade.ShapeElementList()
     all_x, all_y = forward_kinematics_all(thetas, arms)
     for i, cur_theta in enumerate(thetas):
-        joint = arcade.create_ellipse_filled(
-            prev_x+w//2, prev_y+h//2, 5, 5, arcade.color.BLACK)
+        if draw_joints:
+            joint = arcade.create_ellipse_filled(
+                prev_x+w//2, prev_y+h//2, 5, 5, arcade.color.BLACK)
+            shapes.append(joint)
         x, y = all_x[i], all_y[i]
         x = int(x)
         y = int(y)
@@ -35,6 +37,5 @@ def draw_arm(thetas, arms, w, h):
         line = arcade.create_line(
             x+w//2, y+h//2, prev_x+w//2, prev_y+h//2, (color, 0, 0), 3)
         prev_x, prev_y = x, y
-        shapes.append(joint)
         shapes.append(line)
     return shapes, (all_x[-1], all_y[-1])

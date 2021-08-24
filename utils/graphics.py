@@ -92,8 +92,7 @@ class InvKinematicsConstraint(Kinematics):
         if not self.increments.any() and self.target_coord is not None:
             self.optim.zero_grad()
             loss_mse = mseloss(self.cur_coord, self.target_coord, self.w, self.h)
-            loss_con = constraint(self.all_thetas)
-            loss = loss_mse + loss_con * 0.05
-            print(loss_mse, loss_con)
+            loss_con = constraint(self.all_thetas[1:])
+            loss = loss_mse + loss_con * 1.0
             loss.backward()
             self.optim.step()

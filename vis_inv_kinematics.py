@@ -24,8 +24,6 @@ all_arms = 10 ** torch.linspace(
     math.log(10, 10), math.log(40, 10),
     COUNT, dtype=torch.float32)
 
-print(all_arms)
-
 def main():
     window = InvKinematics(
         w=WIDTH,
