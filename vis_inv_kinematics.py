@@ -1,3 +1,4 @@
+import math
 import torch
 import arcade
 import torch.nn as nn
@@ -40,6 +41,14 @@ all_thetas = torch.full((COUNT,), 0, dtype=torch.float32)
 all_arms = torch.full((COUNT,), 15, dtype=torch.float32)
 
 all_arms = torch.linspace(20, 1, COUNT, dtype=torch.float32)
+
+all_arms = 10 ** torch.linspace(
+    math.log(40, 10), math.log(10, 10),
+    COUNT, dtype=torch.float32)
+
+all_arms = 10 ** torch.linspace(
+    math.log(10, 10), math.log(40, 10),
+    COUNT, dtype=torch.float32)
 
 print(all_arms)
 
