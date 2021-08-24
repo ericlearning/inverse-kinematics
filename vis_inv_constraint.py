@@ -2,7 +2,7 @@ import math
 import torch
 import arcade
 import torch.nn as nn
-from utils.graphics import InvKinematics
+from utils.graphics import InvKinematicsConstraint
 
 WIDTH = 800
 HEIGHT = 800
@@ -27,7 +27,7 @@ all_arms = 10 ** torch.linspace(
 print(all_arms)
 
 def main():
-    window = InvKinematics(
+    window = InvKinematicsConstraint(
         w=WIDTH,
         h=HEIGHT,
         title='Kinematics',

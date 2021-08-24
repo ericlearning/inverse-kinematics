@@ -32,10 +32,8 @@ def draw_arm(thetas, arms, w, h):
         x = int(x)
         y = int(y)
         color = int(abs(float(cur_theta) - 3.1415) / 3.1415 * 255)
-        print(cur_theta)
         line = arcade.create_line(
             x+w//2, y+h//2, prev_x+w//2, prev_y+h//2, (color, 0, 0), 3)
-        print(color)
         prev_x, prev_y = x, y
         shapes.append(joint)
         shapes.append(line)
