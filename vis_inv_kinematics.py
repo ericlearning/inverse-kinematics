@@ -17,7 +17,6 @@ class InvKinematics(Kinematics):
 
     def on_mouse_motion(self, x, y, _, __):
         self.target_coord = (x-self.w/2, y-self.h/2)
-        print(self.target_coord)
 
     def on_update(self, _):
         with torch.no_grad():
@@ -25,8 +24,6 @@ class InvKinematics(Kinematics):
             self.all_thetas %= (3.1415 * 2)
         self.update_arm()
         if not self.increments.any() and self.target_coord is not None:
-            self.cur_coord = forward_kinematics(
-                self.all_thetas, self.all_arms)
             self.optim.zero_grad()
             loss = mseloss(self.cur_coord, self.target_coord)
             loss.backward()
@@ -34,10 +31,17 @@ class InvKinematics(Kinematics):
 
 WIDTH = 800
 HEIGHT = 800
-COUNT = 5
+COUNT = 20
 
 all_thetas = torch.rand((COUNT,)) * (3.1415 * 2)
-all_arms = torch.rand((COUNT,)) * (50) + 50
+all_arms = torch.rand((COUNT,)) * (15) + 5
+
+all_thetas = torch.full((COUNT,), 0, dtype=torch.float32)
+all_arms = torch.full((COUNT,), 15, dtype=torch.float32)
+
+all_arms = torch.linspace(20, 1, COUNT, dtype=torch.float32)
+
+print(all_arms)
 
 def main():
     window = InvKinematics(

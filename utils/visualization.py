@@ -1,9 +1,9 @@
 import torch
 import arcade
-from .kinematics import forward_kinematics
+from .kinematics import forward_kinematics, forward_kinematics_all
 
 @torch.no_grad()
-def draw_arm(thetas, arms, w, h):
+def draw_arm_naive(thetas, arms, w, h):
     prev_x, prev_y = 0, 0
     shapes = arcade.ShapeElementList()
     for i in range(1, len(thetas)+1):
@@ -19,3 +19,21 @@ def draw_arm(thetas, arms, w, h):
         shapes.append(joint)
         shapes.append(line)
     return shapes
+
+def draw_arm(thetas, arms, w, h):
+    prev_x, prev_y = 0, 0
+    shapes = arcade.ShapeElementList()
+    all_x, all_y = forward_kinematics_all(thetas, arms)
+    for i in range(0, len(thetas)):
+        joint = arcade.create_ellipse_filled(
+            prev_x+w//2, prev_y+h//2, 5, 5, arcade.color.BLACK)
+        x, y = all_x[i], all_y[i]
+        x = int(x)
+        y = int(y)
+        line = arcade.create_line(
+            x+w//2, y+h//2, prev_x+w//2, prev_y+h//2,
+            arcade.color.RED, 3)
+        prev_x, prev_y = x, y
+        shapes.append(joint)
+        shapes.append(line)
+    return shapes, (all_x[-1], all_y[-1])

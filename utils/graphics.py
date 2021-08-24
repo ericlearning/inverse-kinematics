@@ -19,7 +19,7 @@ class Kinematics(arcade.Window):
         self.arm = None
     
     def update_arm(self):
-        self.arm = draw_arm(
+        self.arm, self.cur_coord = draw_arm(
             self.all_thetas, self.all_arms, self.w, self.h)
     
     def setup(self):
