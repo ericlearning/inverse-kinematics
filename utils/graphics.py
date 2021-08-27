@@ -57,7 +57,7 @@ class InvKinematics(Kinematics):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.all_thetas = nn.Parameter(self.all_thetas)
-        self.optim = optim.Adam([self.all_thetas], 0.1)
+        self.optim = optim.Adam([self.all_thetas], 0.02)
         self.target_coord = None
 
     def on_mouse_motion(self, x, y, _, __):
@@ -78,8 +78,9 @@ class InvKinematicsConstraint(Kinematics):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.all_thetas = nn.Parameter(self.all_thetas)
-        self.optim = optim.Adam([self.all_thetas], 0.1)
+        self.optim = optim.Adam([self.all_thetas], 0.02)
         self.target_coord = None
+        self.straight = 0.1
 
     def on_mouse_motion(self, x, y, _, __):
         self.target_coord = (x-self.w/2, y-self.h/2)
@@ -93,6 +94,14 @@ class InvKinematicsConstraint(Kinematics):
             self.optim.zero_grad()
             loss_mse = mseloss(self.cur_coord, self.target_coord, self.w, self.h)
             loss_con = constraint(self.all_thetas[1:])
-            loss = loss_mse + loss_con * 1.0
+            loss = loss_mse + loss_con * self.straight
             loss.backward()
             self.optim.step()
+
+    def on_key_press(self, symbol, _):
+        if symbol == A:
+            self.straight += 0.1
+            print(self.straight)
+        elif symbol == S:
+            self.straight -= 0.1
+            print(self.straight)
